@@ -8,12 +8,13 @@ public class GravityWarpSetter : MonoBehaviour
 {
 
 
-    int id;
-    public float multiplier = 5, distance = 5;
+    int id, idMultiplier;
+    public float multiplier = 5000, distance = 5000;
 
     void Start()
     {
         id = Shader.PropertyToID("_GravityPoint");
+        idMultiplier = Shader.PropertyToID("_GravityMulitplier");
         Set();
     }
 
@@ -28,9 +29,14 @@ public class GravityWarpSetter : MonoBehaviour
         Set();
     }
 
+    private void OnDestroy()
+    {
+        Shader.SetGlobalVector(id, transform.position);
+    }
+
     public void Set()
     {
-        Shader.SetGlobalFloat("_GravityMulitplier", multiplier);
+        Shader.SetGlobalFloat(idMultiplier, multiplier);
         Shader.SetGlobalFloat("_GravityDistance", distance);
     }
 }

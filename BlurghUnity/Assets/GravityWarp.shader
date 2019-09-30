@@ -50,26 +50,26 @@
 				//float3 mult = (1, 1, 1);
 
 				// TODO clamp to center point
-				//if (dir.y < 0) 
+				//if (dir.y < 0)
 				//{
-				float3 dir = normalize(o.posWorld - _GravityPoint);
+				//float3 dir = normalize(o.posWorld - _GravityPoint);
 				
 				if (_GravityPoint.y > o.posWorld.y)
 				{
 					_GravityPoint.y = o.posWorld.y - (_GravityDistance / 2) + (o.posWorld.y - _GravityPoint.y);
 					float3 dir = normalize(o.posWorld - _GravityPoint);
 					float dist = distance(o.posWorld, _GravityPoint);
-					dist = saturate(1.2 - dist /_GravityDistance);
+					dist = saturate(1 - dist /_GravityDistance);
 					
-					v.vertex.y += -abs(dir.y) / 2 * _GravityMulitplier * dist;
 					v.vertex.x += dir.x * _GravityMulitplier * dist;
+					v.vertex.y += -abs(dir.y) / 2 * _GravityMulitplier * dist;
 					v.vertex.z += dir.z * _GravityMulitplier * dist;
 
-					o.sphereMask = dist;
+					//o.sphereMask = dist;
 
 					o.vertex = UnityObjectToClipPos(v.vertex);
-					o.uv = v.uv;
-					o.normal = v.normal;
+					//o.uv = v.uv;
+					//o.normal = v.normal;	
 					return o;
 				}
 				
@@ -82,9 +82,9 @@
 					//dist = saturate(1 - (pow(dist, 2) / pow(_GravityDistance, 2)));
 					dist = saturate(1 - dist / _GravityDistance);
 					
-					v.vertex.x += dir.x * _GravityMulitplier * dist;
+					v.vertex.x += dir.x * 1 * dist;
 					v.vertex.y += -abs(dir.y) / 2 * _GravityMulitplier * dist;
-					v.vertex.z += dir.z * _GravityMulitplier * dist;
+					v.vertex.z += dir.z * 1 * dist;
 
 					o.sphereMask = dist;
 
@@ -108,13 +108,13 @@
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				fixed4 c = tex2D(_MainTex, i.posWorld.xy);
+				fixed4 c = tex2D(_MainTex, i.uv);
 			
-				c = lerp(c, tex2D(_MainTex, i.posWorld.xy), i.normal.z * i.normal.z);
-				c = lerp(c, tex2D(_MainTex, i.posWorld.yz), i.normal.x * i.normal.x);
-				c = lerp(c, tex2D(_MainTex, i.posWorld.xz), i.normal.y * i.normal.y);
+				//c = lerp(c, tex2D(_MainTex, i.posWorld.xy), i.normal.z * i.normal.z);
+				//c = lerp(c, tex2D(_MainTex, i.posWorld.yz), i.normal.x * i.normal.x);
+				//c = lerp(c, tex2D(_MainTex, i.posWorld.xz), i.normal.y * i.normal.y);
 
-				c.rgb -= 0.4;
+				//c.rgb -= 0.4;
 					
 
 				
