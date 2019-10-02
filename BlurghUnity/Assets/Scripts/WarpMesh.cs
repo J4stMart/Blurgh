@@ -9,7 +9,7 @@ public class WarpMesh : MonoBehaviour
     private MeshCollider collider;
     private Vector3[] originalVertices, displacedVertices;
 
-    private Vector3 gravityPoint = new Vector3(0, 0.5f, 0);
+    public Transform gravityPoint;
     private float gravityDistance = 3f;
 
     // Start is called before the first frame update
@@ -26,13 +26,13 @@ public class WarpMesh : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gravityPoint.z += 0.01f;
+        //transform.position.z += 0.01f;
 
         for (int i = 0; i < displacedVertices.Length; i++)
         {
             var vert = transform.TransformPoint(originalVertices[i]);
             var vert2 = transform.TransformPoint(displacedVertices[i]);
-            Vector3 gPoint = gravityPoint;
+            Vector3 gPoint = gravityPoint.position;
             ///gPoint.y = vert.y - (gravityDistance / 2) + (vert.y - gravityPoint.y);
 
             var dir = Vector3.Normalize(vert - gPoint);
@@ -41,7 +41,7 @@ public class WarpMesh : MonoBehaviour
 
             if (dist < gravityDistance)
             {
-                vert = dir * gravityDistance + gravityPoint;
+                vert = dir * gravityDistance + gravityPoint.position;
 
                // vert.x += dir.x * dist;
                // vert.y += -Mathf.Abs(dir.y) / 2 * dist;
