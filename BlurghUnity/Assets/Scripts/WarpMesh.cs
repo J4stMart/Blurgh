@@ -44,7 +44,13 @@ public class WarpMesh : MonoBehaviour
             if (dist < gravityDistance)
             {
                 var distVector = gPoint - vert;
-                var direction = (transform.TransformDirection(normals[i]) + Vector3.Normalize(distVector)) / 2;
+                var normal = transform.TransformDirection(normals[i]);
+
+                Vector3 direction;
+                if (Vector3.Angle(normal, distVector) > 90)
+                    direction = Vector3.Normalize(normal + Vector3.Normalize(-distVector));
+                else
+                    direction = Vector3.Normalize(normal + Vector3.Normalize(distVector));
 
                 var dpc = Vector3.Dot(distVector, direction);
                 var dSquared = dist * dist - dpc * dpc;
