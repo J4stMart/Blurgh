@@ -39,23 +39,35 @@ public class WarpMesh2 : MonoBehaviour
             var vert = transform.TransformPoint(originalVertices[i]);
             Vector3 gPoint = gravityPoint.position;
 
-            var dist = Mathf.Sqrt(Vector3.Distance(vert, gPoint));
+            var dist = Mathf.Pow(Vector3.Distance(vert, gPoint),0.5f);
              
             if (dist < gravityDistance)
             {
                 var distVector = gPoint - vert;
                 var normal = transform.TransformDirection(normals[i]);
-
-                var distVector2 = (gPoint - Vector3.Dot(gPoint, normal) * Vector3.Normalize(normal) + Vector3.Dot(vert, normal) * Vector3.Normalize(normal)) - vert;
+                var gPointCorrection = (gPoint - Vector3.Dot(gPoint, normal) * Vector3.Normalize(normal) + Vector3.Dot(vert, normal) * Vector3.Normalize(normal));
+                var distVector2 = gPointCorrection - vert;
 
                 Vector3 direction;
+                float dist2;
+                float dpc;
                 if (Vector3.Angle(normal, distVector) > 90)
+                {
                     direction = Vector3.Normalize(normal + distVector2);
+                    dist2 = Mathf.Pow(Vector3.Distance(vert, gPointCorrection),0.5f);
+                    dpc = Vector3.Dot(distVector2, direction);
+                }
+                    
                 else
+                {
                     direction = Vector3.Normalize(normal + distVector);
+                    dpc = Vector3.Dot(distVector, direction);
+                    dist2 = dist;
+                }
 
-                float dpc = Vector3.Dot(distVector2, direction);
-                var dSquared = dist * dist - dpc * dpc;
+
+
+                var dSquared = dist2 * dist2 - dpc * dpc;
                 var offset = Mathf.Sqrt(gravityDistance * gravityDistance - dSquared);
 
                 if (dpc < 0)
