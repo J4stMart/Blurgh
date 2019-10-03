@@ -10,7 +10,7 @@ public class WarpMesh : MonoBehaviour
     private Vector3[] originalVertices, displacedVertices;
     private Vector3[] normals;
 
-    private Vector3 gravityPoint = new Vector3(0, 0.5f, 0);
+    public Transform gravityPoint;
     private float gravityDistance = 3f;
     private float deformation = 1f;
 
@@ -32,12 +32,12 @@ public class WarpMesh : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gravityPoint.z += 0.01f;
+        //transform.position.z += 0.01f;
 
         for (int i = 0; i < displacedVertices.Length; i++)
         {
             var vert = transform.TransformPoint(originalVertices[i]);
-            Vector3 gPoint = gravityPoint;
+            Vector3 gPoint = gravityPoint.position;
 
             float dist = Vector3.Distance(vert, gPoint);
 
