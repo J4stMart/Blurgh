@@ -7,7 +7,7 @@ public class Shoot : MonoBehaviour
 
     public GameObject theBullet;
     public Transform barrelEnd;
-    public ParticleSystem muzzleFlash;
+    public GameObject muzzleFlash;
     public GameObject theGun;
     public Transform MuzzleFlashLocation;
     private Animator mAnimator = null;

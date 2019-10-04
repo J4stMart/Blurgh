@@ -10,15 +10,17 @@ public class WarpMesh2 : MonoBehaviour
     private Vector3[] originalVertices, displacedVertices;
     private Vector3[] normals;
 
-    public Transform gravityPoint;
-    private float gravityDistance = 3f;
+    private Transform gravityPoint;
+    private float gravityDistance = 6f;
     private float deformation = 1f;
+    private float timer;
+    public float curvature = 2f;
 
     [SerializeField]
     private WarpMeshHandler handler;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         mesh = GetComponent<MeshFilter>().mesh;
         collider = GetComponent<MeshCollider>();
@@ -32,56 +34,78 @@ public class WarpMesh2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //transform.position.z += 0.01f;
-
-        for (int i = 0; i < displacedVertices.Length; i++)
+        if (!gravityPoint)
         {
-            var vert = transform.TransformPoint(originalVertices[i]);
-            Vector3 gPoint = gravityPoint.position;
-
-            var dist = Mathf.Pow(Vector3.Distance(vert, gPoint),0.5f);
-             
-            if (dist < gravityDistance)
+            gravityPoint = GameObject.FindWithTag("PointStorage").GetComponent<Transform>();
+            Debug.Log("There is no gravityBullet");
+        }
+        if (gravityPoint == GameObject.FindWithTag("PointStorage").GetComponent<Transform>())
+        {
+            gravityDistance = 6f;
+            if (GameObject.FindWithTag("GravityPoint"))
             {
-                var distVector = gPoint - vert;
-                var normal = transform.TransformDirection(normals[i]);
-                var gPointCorrection = (gPoint - Vector3.Dot(gPoint, normal) * Vector3.Normalize(normal) + Vector3.Dot(vert, normal) * Vector3.Normalize(normal));
-                var distVector2 = gPointCorrection - vert;
-
-                Vector3 direction;
-                float dist2;
-                float dpc;
-                if (Vector3.Angle(normal, distVector) > 90)
-                {
-                    direction = Vector3.Normalize(normal + distVector2);
-                    dist2 = Mathf.Pow(Vector3.Distance(vert, gPointCorrection),0.5f);
-                    dpc = Vector3.Dot(distVector2, direction);
-                }
-                    
-                else
-                {
-                    direction = Vector3.Normalize(normal + distVector);
-                    dpc = Vector3.Dot(distVector, direction);
-                    dist2 = dist;
-                }
-
-
-
-                var dSquared = dist2 * dist2 - dpc * dpc;
-                var offset = Mathf.Sqrt(gravityDistance * gravityDistance - dSquared);
-
-                if (dpc < 0)
-                    vert += direction * (dpc + offset) * deformation;
-                else
-                    vert += direction * (dpc - offset) * deformation;
-
-                displacedVertices[i] = transform.InverseTransformPoint(vert);
-            }
-            else
-            {
-                displacedVertices[i] = originalVertices[i];
+                timer = 0.0f;
+                gravityPoint = GameObject.FindWithTag("GravityPoint").GetComponent<Transform>();
             }
         }
+        //transform.position.z += 0.01f;
+        if (gravityPoint)
+        {
+            timer += Time.deltaTime;
+            if (timer > 11f)
+            {
+                gravityDistance = Mathf.Lerp(0.2f, gravityDistance, (12 - timer) / 1f);
+            }
+            for (int i = 0; i < displacedVertices.Length; i++)
+            {
+                var vert = transform.TransformPoint(originalVertices[i]);
+                Vector3 gPoint = gravityPoint.position;
+
+                var dist = Mathf.Pow(Vector3.Distance(vert, gPoint), 1 / curvature);
+
+                if (dist < gravityDistance)
+                {
+                    var distVector = gPoint - vert;
+                    var normal = transform.TransformDirection(normals[i]);
+                    var gPointCorrection = (gPoint - Vector3.Dot(gPoint, normal) * Vector3.Normalize(normal) + Vector3.Dot(vert, normal) * Vector3.Normalize(normal));
+                    var distVector2 = gPointCorrection - vert;
+
+                    Vector3 direction;
+                    float dist2;
+                    float dpc;
+                    if (Vector3.Angle(normal, distVector) > 90)
+                    {
+                        direction = Vector3.Normalize(normal + distVector2);
+                        dist2 = Mathf.Pow(Vector3.Distance(vert, gPointCorrection), 1 / curvature);
+                        dpc = Vector3.Dot(distVector2, direction);
+                    }
+
+                    else
+                    {
+                        direction = Vector3.Normalize(normal + distVector);
+                        dpc = Vector3.Dot(distVector, direction);
+                        dist2 = dist;
+                    }
+
+
+
+                    var dSquared = dist2 * dist2 - dpc * dpc;
+                    var offset = Mathf.Sqrt(gravityDistance * gravityDistance - dSquared);
+
+                    if (dpc < 0)
+                        vert += direction * (dpc + offset) * deformation;
+                    else
+                        vert += direction * (dpc - offset) * deformation;
+
+                    displacedVertices[i] = transform.InverseTransformPoint(vert);
+                }
+                else
+                {
+                    displacedVertices[i] = originalVertices[i];
+                }
+            }
+        }
+       
 
 
         mesh.vertices = displacedVertices;

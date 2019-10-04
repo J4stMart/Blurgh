@@ -6,9 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/BlackholeEffect.unity
-    guid: 83c2d2e9e2c48174bae36ebf246f5f14
-  - enabled: 1
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/gravitywarp gun.unity
     guid: 83097db5bfe595e41a4bd24faf5c2e40
+  - enabled: 1
+    path: Assets/Scenes/art test.unity
+    guid: e08044d2d3076da4fa1ea10ee6b19347
   m_configObjects: {}
