@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shoot : MonoBehaviour
+public class Manager : MonoBehaviour
 {
 
     public GameObject theBullet;
@@ -12,19 +12,24 @@ public class Shoot : MonoBehaviour
     public GameObject theGun;
     public Transform MuzzleFlashLocation;
     private Animator mAnimator = null;
-    public float gravityDistance;
-    private float timer;
+    public float gravityDistance = 6f;
+    public float deformation = 1f;
+    public float timer;
+    public float curvature = 2f;
+    public float unWarpTime = 0.5f;
+    public float despawnTime = 12f;
+    public float explosionradius = 10.0f;
+    public float explosionpower = 800.0f;
 
     public int bulletSpeed;
-    public float despawnTime = 3.0f;
+
 
     [SerializeField]
     private OVRInput.Controller m_controller;
 
     public bool shootAble = true;
-    public float waitBeforeNextShot = 0.25f;
 
-    private void Awake()
+    private void Start()
     {
         mAnimator = theGun.GetComponent<Animator>();
     }
@@ -39,7 +44,6 @@ public class Shoot : MonoBehaviour
         }
         if (gravityPoint == GameObject.FindWithTag("PointStorage").GetComponent<Transform>())
         {
-            gravityDistance = 6f;
             if (GameObject.FindWithTag("GravityPoint"))
             {
                 timer = 0.0f;
@@ -47,9 +51,8 @@ public class Shoot : MonoBehaviour
             }
         }
 
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger, m_controller) || Input.GetKey(KeyCode.Mouse0))   
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger, m_controller) || Input.GetKey(KeyCode.Mouse0))
         {
-            Debug.Log("pew");
             if (shootAble)
             {
                 shootAble = false;
@@ -65,7 +68,7 @@ public class Shoot : MonoBehaviour
 
     IEnumerator ShootingYield()
     {
-        yield return new WaitForSeconds(waitBeforeNextShot);
+        yield return new WaitForSeconds(despawnTime);
         shootAble = true;
     }
 

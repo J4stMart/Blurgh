@@ -9,19 +9,30 @@ public class WarpMesh2 : MonoBehaviour
     private MeshCollider collider;
     private Vector3[] originalVertices, displacedVertices;
     private Vector3[] normals;
+    private GameObject GameManager;
 
     private Transform gravityPoint;
-    private float gravityDistance = 6f;
-    private float deformation = 1f;
+    private float gravityDistance;
+    private float deformation;
     private float timer;
-    public float curvature = 2f;
+    private float curvature;
+    private float unWarpTime;
+    private float despawnTime;
 
     [SerializeField]
     private WarpMeshHandler handler;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
+        GameManager = GameObject.FindWithTag("GameManager");
+        gravityDistance = GameManager.GetComponent<Manager>().gravityDistance;
+        deformation = GameManager.GetComponent<Manager>().deformation;
+        timer = GameManager.GetComponent<Manager>().timer;
+        curvature = GameManager.GetComponent<Manager>().curvature;
+        unWarpTime = GameManager.GetComponent<Manager>().unWarpTime;
+        despawnTime = GameManager.GetComponent<Manager>().despawnTime;
+
         mesh = GetComponent<MeshFilter>().mesh;
         collider = GetComponent<MeshCollider>();
         originalVertices = mesh.vertices;
@@ -41,7 +52,7 @@ public class WarpMesh2 : MonoBehaviour
         }
         if (gravityPoint == GameObject.FindWithTag("PointStorage").GetComponent<Transform>())
         {
-            gravityDistance = 6f;
+            deformation = GameManager.GetComponent<Manager>().deformation;
             if (GameObject.FindWithTag("GravityPoint"))
             {
                 timer = 0.0f;
@@ -52,9 +63,9 @@ public class WarpMesh2 : MonoBehaviour
         if (gravityPoint)
         {
             timer += Time.deltaTime;
-            if (timer > 11f)
+            if (timer > despawnTime - unWarpTime)
             {
-                gravityDistance = Mathf.Lerp(0.2f, gravityDistance, (12 - timer) / 1f);
+                deformation = Mathf.Lerp(0f, deformation, (despawnTime - timer) / unWarpTime);
             }
             for (int i = 0; i < displacedVertices.Length; i++)
             {
