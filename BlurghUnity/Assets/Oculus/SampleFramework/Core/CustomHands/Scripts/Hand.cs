@@ -156,7 +156,7 @@ namespace OVRTouchSample
                 m_showAfterInputFocusAcquired.Clear();
 
                 // Update function will update this flag appropriately. Do not set it to a potentially incorrect value here.
-                //CollisionEnable(true);
+                CollisionEnable(true);
 
                 m_restoreOnInputAcquired = false;
             }
