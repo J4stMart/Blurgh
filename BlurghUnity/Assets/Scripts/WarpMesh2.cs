@@ -18,6 +18,10 @@ public class WarpMesh2 : MonoBehaviour
     private float curvature;
     private float unWarpTime;
     private float despawnTime;
+    private float radius;
+    private float power;
+    private GameObject explosion;
+    private bool hasExploded = true;
 
     [SerializeField]
     private WarpMeshHandler handler;
@@ -32,6 +36,8 @@ public class WarpMesh2 : MonoBehaviour
         curvature = GameManager.curvature;
         unWarpTime = GameManager.unWarpTime;
         despawnTime = GameManager.despawnTime;
+        radius = GameManager.explosionradius;
+        power = GameManager.explosionpower;
 
         mesh = GetComponent<MeshFilter>().mesh;
         collider = GetComponent<MeshCollider>();
@@ -44,28 +50,22 @@ public class WarpMesh2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        timer = GameManager.timer;
+        deformation = GameManager.deformation;
         if (!gravityPoint)
         {
             gravityPoint = GameObject.FindWithTag("PointStorage").GetComponent<Transform>();
-            Debug.Log("There is no gravityBullet");
         }
         if (gravityPoint == GameObject.FindWithTag("PointStorage").GetComponent<Transform>())
         {
-            deformation = GameManager.deformation;
             if (GameObject.FindWithTag("GravityPoint"))
             {
-                timer = 0.0f;
                 gravityPoint = GameObject.FindWithTag("GravityPoint").GetComponent<Transform>();
             }
         }
 
         if (gravityPoint)
         {
-            timer += Time.deltaTime;
-            if (timer > despawnTime - unWarpTime)
-            {
-                deformation = Mathf.Lerp(0f, deformation, (despawnTime - timer) / unWarpTime);
-            }
             for (int i = 0; i < displacedVertices.Length; i++)
             {
                 var vert = transform.TransformPoint(originalVertices[i]);
@@ -124,4 +124,5 @@ public class WarpMesh2 : MonoBehaviour
         mesh.RecalculateBounds();
         collider.sharedMesh = mesh;
     }
+
 }

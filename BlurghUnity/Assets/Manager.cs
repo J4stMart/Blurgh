@@ -12,13 +12,15 @@ public class Manager : MonoBehaviour
     public GameObject theGun;
     public Transform MuzzleFlashLocation;
     private Animator mAnimator = null;
+    private bool hasExploded = true;
+    private GameObject explosion;
     public float gravityDistance = 6f;
     public float deformation = 1f;
     public float timer;
     public float curvature = 2f;
     public float unWarpTime = 0.5f;
     public float despawnTime = 12f;
-    public float explosionradius = 10.0f;
+    public float explosionradius = 40.0f;
     public float explosionpower = 800.0f;
 
     public int bulletSpeed;
@@ -42,24 +44,43 @@ public class Manager : MonoBehaviour
         {
             gravityPoint = GameObject.FindWithTag("PointStorage").GetComponent<Transform>();
             gravityPoint = theBullet.transform;
-            Debug.Log("There is no gravityBullet");
         }
-        if (gravityPoint == GameObject.FindWithTag("PointStorage").GetComponent<Transform>())
+
+        if (!shootAble)
         {
-            if (GameObject.FindWithTag("GravityPoint"))
+            timer += Time.deltaTime;
+
+            if (timer > despawnTime - 1f)
             {
-                timer = 0.0f;
-                gravityPoint = GameObject.FindWithTag("GravityPoint").GetComponent<Transform>();
+                Explosion();
             }
+            if (timer > despawnTime - unWarpTime)
+            {
+                deformation = Mathf.Lerp(0f, deformation, (despawnTime - timer) / unWarpTime);
+            }
+            if (timer > despawnTime - 2f && !hasExploded)
+            {
+                Debug.Log("taart");
+                hasExploded = true;
+                explosion.SetActive(true);
+            }
+
         }
+        Debug.Log(timer);
 
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger, m_controller) || Input.GetKey(KeyCode.Mouse0))
         {
             if (shootAble)
             {
                 shootAble = false;
+                hasExploded = false;
                 Shooting();
                 StartCoroutine(ShootingYield());
+                gravityPoint = GameObject.FindWithTag("GravityPoint").GetComponent<Transform>();
+                explosion = GameObject.FindWithTag("Explosion");
+                explosion.SetActive(false);
+                timer = 0.0f;
+                deformation = 1.0f;
             }
         }
         else
@@ -86,5 +107,18 @@ public class Manager : MonoBehaviour
         Instantiate(muzzleFlash, MuzzleFlashLocation.position, barrelEnd.rotation);
         mAnimator.SetBool("Shoot", true);
         Destroy(bullet, despawnTime);
+    }
+
+    void Explosion()
+    {
+        Vector3 explosionPos = gravityPoint.position;
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, explosionradius);
+        foreach (Collider hit in colliders)
+        {
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+
+            if (rb != null)
+                rb.AddExplosionForce(explosionpower, explosionPos, explosionradius, 3.0F);
+        }
     }
 }
