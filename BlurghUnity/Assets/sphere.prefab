@@ -175,7 +175,7 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -452,16 +452,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3772995468032650416, guid: 64f8962d320e3e247a7401bfb8fe5b90,
-        type: 3}
-      propertyPath: Priority
-      value: 159
-      objectReference: {fileID: 0}
-    - target: {fileID: 3772995468032650416, guid: 64f8962d320e3e247a7401bfb8fe5b90,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6141698377660559218, guid: 64f8962d320e3e247a7401bfb8fe5b90,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -476,6 +466,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3772995468032650416, guid: 64f8962d320e3e247a7401bfb8fe5b90,
+        type: 3}
+      propertyPath: Priority
+      value: 159
+      objectReference: {fileID: 0}
+    - target: {fileID: 3772995468032650416, guid: 64f8962d320e3e247a7401bfb8fe5b90,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 101916262266735030, guid: 64f8962d320e3e247a7401bfb8fe5b90,
         type: 3}
