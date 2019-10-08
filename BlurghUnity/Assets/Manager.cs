@@ -90,7 +90,7 @@ public class Manager : MonoBehaviour
 
         if (OVRInput.Get(OVRInput.Button.One))
         {
-            player.Jump();
+            //player.Jump();
         }
     }
 
