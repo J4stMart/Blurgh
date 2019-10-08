@@ -26,6 +26,8 @@ public class Manager : MonoBehaviour
 
     [SerializeField]
     private OVRInput.Controller m_controller;
+    [SerializeField]
+    private OVRPlayerController player;
 
     public bool shootAble = true;
 
@@ -63,6 +65,11 @@ public class Manager : MonoBehaviour
         else
         {
             mAnimator.SetBool("Shoot", false);
+        }
+
+        if (OVRInput.Get(OVRInput.Button.One))
+        {
+            player.Jump();
         }
     }
 

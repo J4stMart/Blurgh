@@ -9,7 +9,7 @@ public class WarpMesh2 : MonoBehaviour
     private MeshCollider collider;
     private Vector3[] originalVertices, displacedVertices;
     private Vector3[] normals;
-    private GameObject GameManager;
+    private Manager GameManager;
 
     private Transform gravityPoint;
     private float gravityDistance;
@@ -25,21 +25,20 @@ public class WarpMesh2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameManager = GameObject.FindWithTag("GameManager");
-        gravityDistance = GameManager.GetComponent<Manager>().gravityDistance;
-        deformation = GameManager.GetComponent<Manager>().deformation;
-        timer = GameManager.GetComponent<Manager>().timer;
-        curvature = GameManager.GetComponent<Manager>().curvature;
-        unWarpTime = GameManager.GetComponent<Manager>().unWarpTime;
-        despawnTime = GameManager.GetComponent<Manager>().despawnTime;
+        GameManager = GameObject.FindWithTag("GameManager").GetComponent<Manager>();
+        gravityDistance = GameManager.gravityDistance;
+        deformation = GameManager.deformation;
+        timer = GameManager.timer;
+        curvature = GameManager.curvature;
+        unWarpTime = GameManager.unWarpTime;
+        despawnTime = GameManager.despawnTime;
 
         mesh = GetComponent<MeshFilter>().mesh;
         collider = GetComponent<MeshCollider>();
         originalVertices = mesh.vertices;
         displacedVertices = new Vector3[originalVertices.Length];
         normals = mesh.normals;
-        //for (int i = 0; i < displacedVertices.Length; i++)
-        //   displacedVertices[i] = originalVertices[i];
+        
     }
 
     // Update is called once per frame
@@ -52,14 +51,14 @@ public class WarpMesh2 : MonoBehaviour
         }
         if (gravityPoint == GameObject.FindWithTag("PointStorage").GetComponent<Transform>())
         {
-            deformation = GameManager.GetComponent<Manager>().deformation;
+            deformation = GameManager.deformation;
             if (GameObject.FindWithTag("GravityPoint"))
             {
                 timer = 0.0f;
                 gravityPoint = GameObject.FindWithTag("GravityPoint").GetComponent<Transform>();
             }
         }
-        //transform.position.z += 0.01f;
+
         if (gravityPoint)
         {
             timer += Time.deltaTime;
@@ -78,14 +77,15 @@ public class WarpMesh2 : MonoBehaviour
                 {
                     var distVector = gPoint - vert;
                     var normal = transform.TransformDirection(normals[i]);
-                    var gPointCorrection = (gPoint - Vector3.Dot(gPoint, normal) * Vector3.Normalize(normal) + Vector3.Dot(vert, normal) * Vector3.Normalize(normal));
-                    var distVector2 = gPointCorrection - vert;
+
 
                     Vector3 direction;
                     float dist2;
                     float dpc;
                     if (Vector3.Angle(normal, distVector) > 90)
                     {
+                        var gPointCorrection = (gPoint - Vector3.Dot(gPoint, normal) * normal + Vector3.Dot(vert, normal) * normal);
+                        var distVector2 = gPointCorrection - vert;
                         direction = Vector3.Normalize(normal + distVector2);
                         dist2 = Mathf.Pow(Vector3.Distance(vert, gPointCorrection), 1 / curvature);
                         dpc = Vector3.Dot(distVector2, direction);
@@ -116,7 +116,7 @@ public class WarpMesh2 : MonoBehaviour
                 }
             }
         }
-       
+
 
 
         mesh.vertices = displacedVertices;
