@@ -32,10 +32,11 @@ public class WarpTutorial : MonoBehaviour
         script.gravityPoint = gravityPoint;
         script.gravityDistance = gravityDistance;
         script.curvature = curvature;
-        script.deformation = 0;
+        script.deformation = 0.001f;
 
         textElement.text = "Hold your hands close to eachother\nAnd press either of the index finger triggers\n\nTo active the gravity field";
         line = GetComponent<LineRenderer>();
+        line.enabled = false;
     }
 
     // Update is called once per frame
@@ -45,13 +46,14 @@ public class WarpTutorial : MonoBehaviour
 
         if(activated)
         {
-            var targetDeformation = Mathf.Clamp(dist, 0, maxHandDistance);
+            var targetDeformation = Mathf.Clamp(dist, 0.001f, maxHandDistance);
             script.deformation = Mathf.Lerp(script.deformation, targetDeformation, dist / maxHandDistance);
             color = Color.Lerp(Color.green, Color.red, dist / maxHandDistance);
 
             line.SetPosition(0, leftHand.position);
             line.SetPosition(1, rightHand.position);
-            line.SetColors(color, color);
+            line.startColor = color;
+            line.endColor = color;
         }
         else
         {
@@ -67,7 +69,7 @@ public class WarpTutorial : MonoBehaviour
         {
             activated = false;
             textElement.text = "Hold your hands close to eachother\nAnd press either of the index finger triggers\n\nTo active the gravity field";
-            line.enabled = true;
+            line.enabled = false;
         }
     }
 }
