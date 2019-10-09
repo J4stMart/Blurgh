@@ -6,6 +6,7 @@ public class Manager : MonoBehaviour
 {
 
     public GameObject theBullet;
+    public GameObject ExplosionSoundSource;
     private Transform gravityPoint;
     public Transform barrelEnd;
     public GameObject muzzleFlash;
@@ -22,6 +23,7 @@ public class Manager : MonoBehaviour
     public float despawnTime = 12f;
     public float explosionradius = 40.0f;
     public float explosionpower = 800.0f;
+    private float defaultdeformation;
 
     public int bulletSpeed;
 
@@ -36,6 +38,7 @@ public class Manager : MonoBehaviour
     private void Start()
     {
         mAnimator = theGun.GetComponent<Animator>();
+        defaultdeformation = deformation;
     }
 
     private void Update()
@@ -50,19 +53,20 @@ public class Manager : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            if (timer > despawnTime - 1f)
-            {
-                Explosion();
-            }
             if (timer > despawnTime - unWarpTime)
             {
                 deformation = Mathf.Lerp(0f, deformation, (despawnTime - timer) / unWarpTime);
             }
-            if (timer > despawnTime - 2f && !hasExploded)
+            if (timer > despawnTime - 0.6f && !hasExploded)
             {
-                Debug.Log("taart");
-                hasExploded = true;
                 explosion.SetActive(true);
+                ReversedExplosion();
+            }
+            if (timer > despawnTime - 0.1f && !hasExploded)
+            {
+                hasExploded = true;
+                Instantiate(ExplosionSoundSource, gravityPoint.position, gravityPoint.rotation);
+                Explosion();
             }
 
         }
@@ -80,7 +84,7 @@ public class Manager : MonoBehaviour
                 explosion = GameObject.FindWithTag("Explosion");
                 explosion.SetActive(false);
                 timer = 0.0f;
-                deformation = 1.0f;
+                deformation = defaultdeformation;
             }
         }
         else
@@ -118,7 +122,20 @@ public class Manager : MonoBehaviour
             Rigidbody rb = hit.GetComponent<Rigidbody>();
 
             if (rb != null)
-                rb.AddExplosionForce(explosionpower, explosionPos, explosionradius, 3.0F);
+                rb.AddExplosionForce(explosionpower, explosionPos, explosionradius, 1.0F);
+        }
+    }
+
+    void ReversedExplosion()
+    {
+        Vector3 explosionPos = gravityPoint.position;
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, explosionradius);
+        foreach (Collider hit in colliders)
+        {
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+
+            if (rb != null)
+                rb.AddExplosionForce(-0.1f * explosionpower, explosionPos, explosionradius, 0.0F);
         }
     }
 }
