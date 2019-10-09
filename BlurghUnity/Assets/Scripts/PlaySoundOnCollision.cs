@@ -15,7 +15,10 @@ public class PlaySoundOnCollision : MonoBehaviour
 
     void OnCollisionEnter() 
     {
-        GetComponent<AudioSource>().Play();
-        Debug.Log("bounce");
+        if (!GetComponent<AudioSource>().isPlaying)
+        {
+            GetComponent<AudioSource>().PlayOneShot(bounce);
+        }
+
     }
 }
