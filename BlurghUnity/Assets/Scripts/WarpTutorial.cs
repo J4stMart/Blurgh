@@ -14,6 +14,9 @@ public class WarpTutorial : MonoBehaviour
     [SerializeField]
     private Text textElement;
 
+    [SerializeField]
+    private OVRInput.Controller m_controller;
+
     public Transform gravityPoint;
     public float gravityDistance;
     public float curvature;
@@ -44,7 +47,7 @@ public class WarpTutorial : MonoBehaviour
     {
         var dist = Vector3.Distance(leftHand.position, rightHand.position) - minHandDistance;
 
-        if(activated)
+        if (activated)
         {
             var targetDeformation = Mathf.Clamp(dist, 0.001f, maxHandDistance);
             script.deformation = Mathf.Lerp(script.deformation, targetDeformation, dist / maxHandDistance);
@@ -57,15 +60,15 @@ public class WarpTutorial : MonoBehaviour
         }
         else
         {
-            if(dist <= minHandDistance && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+            if (dist <= minHandDistance && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
             {
                 activated = true;
                 textElement.text = "Move your hands away from eachother\nAnd experience a gravity well";
                 line.enabled = true;
             }
         }
-        
-        if(!OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger))
+
+        if (OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger))
         {
             activated = false;
             textElement.text = "Hold your hands close to eachother\nAnd press either of the index finger triggers\n\nTo active the gravity field";

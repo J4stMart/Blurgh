@@ -79,10 +79,11 @@ public class WarpMeshTutorial : MonoBehaviour
                 displacedVertices[i] = originalVertices[i];
             }
 
-            mesh.vertices = displacedVertices;
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-            collider.sharedMesh = mesh;
         }
+        mesh.vertices = displacedVertices;
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        collider.sharedMesh = mesh;
     }
+
 }

@@ -4,27 +4,21 @@ using UnityEngine;
 
 public class rotate : MonoBehaviour
 {
-    public float RotationSpeed = 1.0f;
-
-    void OnTriggerEnter(Collider other)
+    public float RotationSpeed = 1f;
+    public GameObject darm;
+    void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.name == "L") 
+        if (other.gameObject.name == "L")
         {
-            Quaternion currentRotation = other.transform.rotation;
+            Quaternion currentRotation = darm.transform.rotation;
             Quaternion wantedRotation = Quaternion.Euler(0, 0, 10);
-            transform.rotation = Quaternion.RotateTowards(currentRotation, wantedRotation, Time.deltaTime * 4);
+            darm.transform.rotation = Quaternion.RotateTowards(currentRotation, wantedRotation, Time.deltaTime * RotationSpeed);
         }
         else if (other.gameObject.name == "R")
         {
-            Quaternion currentRotation = other.transform.rotation;
+            Quaternion currentRotation = darm.transform.rotation;
             Quaternion wantedRotation = Quaternion.Euler(0, 0, -10);
-            transform.rotation = Quaternion.RotateTowards(currentRotation, wantedRotation, Time.deltaTime * 4);
-        }
-        else
-        {
-            Quaternion currentRotation = other.transform.rotation;
-            Quaternion wantedRotation = Quaternion.Euler(0, 0, 0);
-            transform.rotation = Quaternion.RotateTowards(currentRotation, wantedRotation, Time.deltaTime * 4);
+            darm.transform.rotation = Quaternion.RotateTowards(currentRotation, wantedRotation, Time.deltaTime * RotationSpeed);
         }
     }
 }
