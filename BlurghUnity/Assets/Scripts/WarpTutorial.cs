@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class WarpTutorial : MonoBehaviour
 {
@@ -73,6 +74,21 @@ public class WarpTutorial : MonoBehaviour
             activated = false;
             textElement.text = "Hold your hands close to eachother\nAnd press either of the index finger triggers\n\nTo active the gravity field";
             line.enabled = false;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            StartCoroutine(LoadArtScene());
+        }
+    }
+
+    IEnumerator LoadArtScene()
+    {
+        var asyncLoad = SceneManager.LoadSceneAsync("art test");
+
+        while(!asyncLoad.isDone)
+        {
+            yield return null;
         }
     }
 }
